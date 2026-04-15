@@ -1,47 +1,77 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=23574132&assignment_repo_type=AssignmentRepo)
 # Day 10 Lab: Data Pipeline & Data Observability
 
-**Student Email:** email@example.com
-**Name:** (Dien ten cua ban)
+**Student ID:** AI20K-2A202600421  
+**Student Email:** lylyphan1104@gmail.com  
+**Name:** Phan Anh Ly Ly
 
----
+## Overview
 
-## Mo ta
+This lab implements a simple ETL pipeline for product data and demonstrates why data quality matters for AI systems. The pipeline reads raw JSON data, removes invalid records, applies a small business transformation, and saves the cleaned output to CSV. After that, the project compares an agent's answer when it uses clean data versus garbage data.
 
-(Mo ta ngan gon bai lab va nhung gi ban da lam)
+## What I Completed
 
----
+- Built the ETL flow in `solution.py` with `extract`, `validate`, `transform`, and `load`.
+- Dropped invalid records with non-positive price or empty category.
+- Standardized `category` to Title Case.
+- Added `discounted_price` with a 10% discount.
+- Added `processed_at` timestamp for observability.
+- Ran an agent simulation on clean data and garbage data, then documented the outcome in `experiment_report.md`.
 
-## Cach chay (How to Run)
+## How to Run
 
 ### Prerequisites
+
+Install the required packages:
+
 ```bash
-pip install pandas
+pip install pandas pytest
 ```
 
-### Chay ETL Pipeline
+### Run the ETL Pipeline
+
 ```bash
 python solution.py
 ```
 
-### Chay Agent Simulation (Stress Test)
+Expected result:
+
+- Input file: `raw_data.json`
+- Output file: `processed_data.csv`
+- Validation log shows how many records were kept and dropped
+
+### Run the Agent Stress Test
+
 ```bash
-# Mo ta cach ban chay thi nghiem Clean vs Garbage data
+python agent_simulation.py
 ```
 
----
+This script compares the agent response when using:
 
-## Cau truc thu muc
+- Clean data from `processed_data.csv`
+- Garbage data from `garbage_data.csv`
 
+## Project Structure
+
+```text
+solution.py
+agent_simulation.py
+raw_data.json
+processed_data.csv
+garbage_data.csv
+experiment_report.md
+README.md
+tests/test_autograder.py
 ```
-├── solution.py              # ETL Pipeline script
-├── processed_data.csv       # Output cua pipeline
-├── experiment_report.md     # Bao cao thi nghiem
-└── README.md                # File nay
-```
 
----
+## Results Summary
 
-## Ket qua
+- Raw records: 5
+- Valid records kept: 3
+- Invalid records dropped: 2
+- Dropped reasons: negative price and missing category
 
-(Tom tat ket qua: bao nhieu records da xu ly, bao nhieu bi loai, v.v.)
+The cleaned output keeps only trustworthy rows such as `Laptop`, `Chair`, and `Monitor`. In the stress test, the agent gives a sensible answer with clean data, but it chooses an unrealistic item from the garbage dataset because the bad data includes an extreme outlier (`Nuclear Reactor` at `999999`).
+
+## Notes
+
+On Windows, if `processed_data.csv` is open in another application such as Excel, the script may fail to overwrite it. Closing that file before rerunning the pipeline avoids the permission issue.
